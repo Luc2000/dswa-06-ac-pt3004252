@@ -1,32 +1,15 @@
 angular.module('ifsp').controller('CursoController',
-    function($resource, $scope) {
-        $scope.cursos = [];
-        $scope.filtro = '';
-        $scope.mensagem = { texto: '' };
+    function($scope, $routeParams, $resource) {
         var Curso = $resource('/cursos/:id');
-
-        function buscaCursos() {
-            Curso.query(
-                function(cursos) {
-                    $scope.cursos = cursos;
-                    $scope.mensagem = {};
-                },
-                function(erro) {
-                    console.log("Não foi possível obter a lista de cursos");
-                    console.log(erro);
-                    $scope.mensagem = { texto: "Não foi possível obter a lista de cursos" };
-                }
-            );
-        }
-        buscaCursos();
-        $scope.remove = function(curso) {
-            console.log(curso);
-            Curso.delete({ id: curso._id },
-                buscaCursos,
-                function(erro) {
-                    console.log("Não foi possível remover o curso");
-                    console.log(erro);
-                    $scope.mensagem = { texto: "Não foi possível remover o curso" };
-                });
-        };
+        Curso.get({ id: $routeParams.cursoId },
+            function(curso) {
+                $scope.curso = curso;
+            },
+            function(erro) {
+                $scope.mensagem = {
+                    texto: 'Não foi possível obter o curso.'
+                };
+                console.log($routeParams.cursoId);
+            }
+        );
     });
